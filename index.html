@@ -1068,17 +1068,16 @@ body,
 
 
                     <!-- EXPENSE MODULE START -->
-<!-- Navigation Menu -->
-<div class="nav-item-dropdown" id="expense-nav-item">
-    <button class="tab-link dropdown-toggle" onclick="toggleSubMenu('expense-nav-item')">
-        💸 Stock Management <span class="arrow">▼</span>
-    </button>
-    <div class="sub-tabs">
-        <button class="tab-link sub-tab" onclick="openModule(event, 'AddStock')">Add Stock</button> <!-- Name Changed -->
-        <button class="tab-link sub-tab" onclick="openModule(event, 'ExpenseHistory')">Stock History</button>
-    </div>
-</div>
-<!-- EXPENSE MODULE END -->
+                    <div class="nav-item-dropdown" id="expense-nav-item">
+                        <button class="tab-link dropdown-toggle" onclick="toggleSubMenu('expense-nav-item')">
+                            💸 Expenses <span class="arrow">▼</span>
+                        </button>
+                        <div class="sub-tabs">
+                            <button class="tab-link sub-tab" onclick="openModule(event, 'AddExpense')">Add Expense</button>
+                            <button class="tab-link sub-tab" onclick="openModule(event, 'ExpenseHistory')">Expense History</button>
+                        </div>
+                    </div>
+                    <!-- EXPENSE MODULE END -->
 
                     <!-- GATE PASS DROPDOWN START -->
                     <div class="nav-item-dropdown" id="gate-pass-nav-item">
@@ -1239,7 +1238,7 @@ body,
 
             <!-- 3. Calculations Inputs -->
             <label style="font-weight: bold; color: var(--accent-color);">Rate (Per Unit):</label>
-<input type="number" id="dr-rate" class="form-control" placeholder="0.00" readonly style="background-color: rgba(255,255,255,0.05) !important; cursor: not-allowed; font-weight: bold; color: var(--accent-color);">
+            <input type="number" id="dr-rate" class="form-control" placeholder="Rate likhein..." oninput="calculateDemandRecordMath()">
 
             <label>Bill Amount (Bill):</label>
             <input type="number" id="dr-bill" class="form-control" placeholder="0.00" readonly style="background-color: rgba(255,255,255,0.05) !important; font-weight: bold;">
@@ -2467,113 +2466,45 @@ body,
                 </div>
                 <!-- END NEW MODULE: Purchase -->
 
-<!-- START NEW MODULE: EXPENSE STOCK MODULE -->
-<div id="ExpenseStock" class="module-content" style="display:none !important;">
-    <h2 class="panel-title">📦 Expense Stock Module</h2>
-    
-    <div class="manage-form">
-        <h3>Dispatch Stock (Stock Nikalein)</h3>
-        <div class="form-grid" style="display: grid; grid-template-columns: 150px 1fr 150px 1fr; gap: 15px; align-items: center;">
-            
-            <!-- 1. Mojuda stock jo automatic dropdown mein dikhega -->
-            <label for="es-inventory-select">Select Available Stock:</label>
-            <select id="es-inventory-select" class="form-control" onchange="updateSelectedStockAvailability()" style="grid-column: 2 / 5; border: 1.5px solid var(--accent-color) !important;">
-                <option value="">-- Select Available Stock --</option>
-            </select>
-
-            <!-- 2. Automatic display hone wali values -->
-            <label for="es-available-qty">Available Stock Qty:</label>
-            <input type="number" id="es-available-qty" class="form-control" readonly style="background-color: rgba(255,255,255,0.05) !important; cursor: not-allowed; font-weight: bold;">
-
-            <label for="es-qty-going">Stock Quantity Going (Taken):</label>
-            <input type="number" id="es-qty-going" class="form-control" placeholder="E.g., 5" oninput="calculateExpenseStockNewRemaining()" style="border: 1.5px solid var(--warning-color) !important;">
-
-            <label for="es-new-remaining">New Remaining Stock:</label>
-            <input type="number" id="es-new-remaining" class="form-control" readonly style="background-color: rgba(255,255,255,0.05) !important; cursor: not-allowed; font-weight: bold; color: var(--success-color);">
-
-            <label for="es-user">Taken By (User Name):</label>
-            <input type="text" id="es-user" class="form-control" placeholder="E.g., Junaid, Worker">
-
-            <label for="es-date">Date:</label>
-            <input type="date" id="es-date" class="form-control" style="grid-column: 2 / 5;">
-        </div>
-        <div class="manage-buttons" style="margin-top: 20px;">
-            <button class="btn btn-danger" onclick="saveExpenseStock()" style="width: 100%; font-weight: bold;">Deduct Stock & Save</button>
-        </div>
-    </div>
-
-    <!-- Inventory Overview Table -->
-    <div class="table-container" style="margin-top: 20px;">
-        <h3>📊 Available Stock Inventory Overview</h3>
-        <table class="cart-table">
-            <thead>
-                <tr>
-                    <th>Product Name</th>
-                    <th>Category</th>
-                    <th>Current Available Stock</th>
-                </tr>
-            </thead>
-            <tbody id="es-inventory-tbody">
-                <!-- Live available items show honge -->
-            </tbody>
-        </table>
-    </div>
-
-    <!-- History Table -->
-    <div class="table-container" style="margin-top: 20px;">
-        <h3>🕒 Dispatched (Going) Stock History</h3>
-        <table class="cart-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Product Name</th>
-                    <th>Category</th>
-                    <th>Taken By</th>
-                    <th>Qty Taken</th>
-                    <th>Remaining Stock</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="es-table-body">
-                <!-- History records yahan dynamic load honge -->
-            </tbody>
-        </table>
-    </div>
-</div>
-<!-- END NEW MODULE: EXPENSE STOCK MODULE -->
-
                 <!-- START NEW MODULE: Expenses -->
-                <div id="AddStock" class="module-content">
-    <h2 class="panel-title">📦 Add New Stock</h2>
-    <div class="manage-form">
-        <h3 id="stock-form-title">Add Stock Details</h3>
-        <div class="form-grid">
-            <label for="stock-category">Category:</label>
-            <div style="display: flex; gap: 10px;">
-                <select id="stock-category" class="form-control" style="flex-grow: 1;"></select>
-                <button id="btn-manage-categories" class="btn btn-info">Manage</button>
-            </div>
-            
-            <label for="stock-product-name">Product Name:</label>
-            <input type="text" id="stock-product-name" class="form-control" placeholder="E.g., HP Laptop">
-
-            <label for="stock-quantity">Quantity:</label>
-            <input type="number" id="stock-quantity" class="form-control" placeholder="0">
-
-            <label for="stock-date">Date:</label>
-            <input type="date" id="stock-date" class="form-control">
-        </div>
-        <div class="manage-buttons">
-            <button id="btn-add-stock" class="btn btn-primary" onclick="addNewStock()">Add Stock</button>
-        <label for="stock-price">Price Per Unit (Rs.):</label>
-<input type="number" id="stock-price" class="form-control" placeholder="0.00" oninput="calculateStockValue()">
-
-<label>Total Value:</label>
-<input type="text" id="stock-total-value" class="form-control" readonly style="background: rgba(0,0,0,0.2);">
-        
-        </div>
+                <div id="AddExpense" class="module-content">
+                    <h2 class="panel-title">💸 Add Daily Expenses</h2>
+                    <div class="manage-form">
+                        <h3 id="expense-form-title">Add New Expense</h3>
+                        <div class="form-grid">
+    <label for="expense-category">Category:</label>
+    <div style="display: flex; gap: 10px;">
+        <select id="expense-category" class="form-control" style="flex-grow: 1;"></select>
+        <button id="btn-manage-categories" class="btn btn-info">Manage</button>
     </div>
+    
+    <!-- Deleted input field wapas add ki gayi -->
+    <label for="expense-amount">Amount (Rs.):</label>
+    <input type="number" id="expense-amount" class="form-control" placeholder="Enter amount">
+
+    <label for="expense-description">Description:</label>
+    <input type="text" id="expense-description" class="form-control" placeholder="E.g., Monthly rent payment">
+    <label for="expense-date">Date:</label>
+    <input type="date" id="expense-date" class="form-control">
+
+    <!-- Naye Fields -->
+    <label for="expense-rider-name">Rider Name:</label>
+    <input type="text" id="expense-rider-name" class="form-control" placeholder="Enter rider name">
+
+    <label for="expense-number-plate">Number Plate:</label>
+    <input type="text" id="expense-number-plate" class="form-control" placeholder="Enter vehicle number plate">
+
+    <label for="expense-parts">Parts:</label>
+    <input type="text" id="expense-parts" class="form-control" placeholder="Enter parts details">
 </div>
+                        <div class="manage-buttons">
+                            <button id="btn-add-expense" class="btn btn-primary">Add Expense</button>
+                            <button id="btn-save-expense-changes" class="btn btn-success" style="display:none;">Save Changes</button>
+                            <button id="btn-cancel-expense-edit" class="btn btn-secondary" style="display:none;">Cancel Edit</button>
+                            <button id="btn-clear-expense-form" class="btn btn-secondary">Clear Form</button>
+                        </div>
+                    </div>
+                </div>
                 <div id="ExpenseHistory" class="module-content">
                     <h2 class="panel-title">Expense History & Reports</h2>
                     
@@ -2757,8 +2688,8 @@ body,
             <label>Phone Number:</label>
             <input type="tel" id="labor-phone" class="form-control" placeholder="Mobile Number">
             
-            <label>Per Day Salary (Rozana ki Ujrat):</label>
-            <input type="number" id="labor-rate" class="form-control" placeholder="E.g. 1000 per day">
+           <label>Monthly Full Salary:</label>
+<input type="number" id="labor-rate" class="form-control" placeholder="E.g. 25000 full salary">
         </div>
         <button class="btn btn-success" onclick="saveLabor()" style="margin-top:20px; width: 100%;">Save Employee</button>
     </div>
@@ -2766,7 +2697,7 @@ body,
     <div class="table-container" style="margin-top: 20px;">
         <h3>Registered Labor List</h3>
         <table class="cart-table">
-            <thead><tr><th>Name</th><th>Phone</th><th>Per Day Rate</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Name</th><th>Phone</th><th>Per Hour Rate</th><th>Actions</th></tr></thead>
             <tbody id="labor-list-body"></tbody>
         </table>
     </div>
@@ -2778,41 +2709,30 @@ body,
         <h3>Mark Attendance</h3>
         <div class="form-grid">
             <label>Select Employee:</label>
-            <select id="labor-select" class="form-control" onchange="checkExistingAttendance()"></select>
+            <select id="labor-select" class="form-control" onchange="calculateLaborSalary()"></select>
             
             <label>Date:</label>
-            <input type="date" id="labor-date" class="form-control" onchange="checkExistingAttendance()">
+            <input type="date" id="labor-date" class="form-control">
             
-            <label>Attendance Status:</label>
-            <select id="labor-status" class="form-control" onchange="calculateLaborSalary()">
-                <option value="Present">Present</option>
-                <option value="Absent">Absent</option>
-                <option value="Leave">Leave</option>
-            </select>
-            
-            <label>Time In (Aane ka Waqt):</label>
-            <div style="display: flex; gap: 10px; width: 100%;">
-                <input type="time" id="labor-time-in" class="form-control" style="flex-grow: 1;">
-                <button type="button" class="btn btn-info" onclick="setAttendanceTime('labor-time-in')" style="white-space: nowrap;">🕒 Mark In</button>
+            <label>Mark as Leave:</label>
+            <div class="checkbox-group">
+                <input type="checkbox" id="labor-is-leave" onchange="toggleLaborLeave()">
+                <label for="labor-is-leave" style="color: var(--danger-color); font-weight: bold;">Employee is on Leave (Chutti)</label>
             </div>
             
-            <label>Time Out (Jane ka Waqt):</label>
-            <div style="display: flex; gap: 10px; width: 100%;">
-                <input type="time" id="labor-time-out" class="form-control" style="flex-grow: 1;">
-                <button type="button" class="btn btn-warning" onclick="setAttendanceTime('labor-time-out')" style="white-space: nowrap;">🕒 Mark Out</button>
-            </div>
-
-            <!-- NAYA ALLOWANCE OPTION -->
-            <label>Allowance (Rs):</label>
-            <input type="number" id="labor-allowance" class="form-control" placeholder="E.g. 200 (Khana/Safar)" oninput="calculateLaborSalary()">
+            <label>Time In:</label>
+            <input type="time" id="labor-time-in" class="form-control" oninput="calculateLaborSalary()">
+            
+            <label>Time Out:</label>
+            <input type="time" id="labor-time-out" class="form-control" oninput="calculateLaborSalary()">
             
             <label>Calculated Salary (Rs):</label>
             <input type="text" id="labor-calculated-salary" class="form-control" readonly style="font-weight:bold; color:var(--success-color); background: rgba(0,0,0,0.2);">
         </div>
         <button class="btn btn-primary" onclick="saveLaborAttendance()" style="margin-top:20px; width: 100%;">Save Salary Record</button>
-    </div>
+    </div> <!-- Mark Attendance form yahan band hua -->
 
-    <!-- ADVANCE SALARY FORM -->
+    <!-- NAYA ADVANCE SALARY FORM (Ab ye LaborSalary div ke andar aa chuka hai) -->
     <div class="manage-form" style="margin-top: 20px; border-top: 3px solid var(--warning-color);">
         <h3>💸 Pay Advance Salary</h3>
         <div class="form-grid">
@@ -2830,7 +2750,9 @@ body,
         </div>
         <button class="btn btn-warning" onclick="saveLaborAdvance()" style="margin-top:20px; width: 100%;">Record Advance Payment</button>
     </div>
-</div> 
+
+</div> <!-- <--- SAHI JAGAH: LaborSalary div ab yahan pure Advance form ke baad band hoga -->
+
 
 <div id="LaborReport" class="module-content">
     <h2 class="panel-title">📋 Labor Monthly Report</h2>
@@ -2844,35 +2766,23 @@ body,
                 <label>Select Month:</label>
                 <input type="month" id="report-labor-month" class="form-control">
             </div>
-            <div style="display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap;">
-                <button class="btn btn-info" onclick="generateLaborReport()">View Report</button>
-                <button class="btn btn-success" id="btn-labor-pdf" onclick="downloadIndividualLaborPDF()" style="display: none;">📄 Download PDF (Individual)</button>
-                <button class="btn btn-warning" onclick="downloadAllLaborSummaryPDF()">📋 All Staff Summary PDF</button>
+            <div style="display: flex; align-items: flex-end;">
+                <button class="btn btn-info" onclick="generateLaborReport()">Generate Report</button>
             </div>
         </div>
     </div>
 
-
     <!-- Summary Cards -->
-    <div class="dashboard-grid" style="margin-top: 20px; display: none; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));" id="labor-report-summary">
+    <div class="dashboard-grid" style="margin-top: 20px; display: none;" id="labor-report-summary">
         <div class="dashboard-card"><p class="card-title">Total Present Days</p><h2 id="lr-present-days" class="card-value info">0</h2></div>
-        <div class="dashboard-card"><p class="card-title">Total Absent</p><h2 id="lr-hours" class="card-value warning">0</h2></div>
-        <div class="dashboard-card"><p class="card-title">Total Allowance</p><h2 id="lr-allowance" class="card-value info">Rs. 0.00</h2></div>
-        <div class="dashboard-card"><p class="card-title">Total Earned Salary</p><h2 id="lr-salary" class="card-value success">Rs. 0.00</h2></div>
+        <div class="dashboard-card"><p class="card-title">Total Leaves</p><h2 id="lr-leaves" class="card-value danger">0</h2></div>
+        <div class="dashboard-card"><p class="card-title">Total Worked Hours</p><h2 id="lr-hours" class="card-value warning">0</h2></div>
+        <div class="dashboard-card"><p class="card-title">Total Monthly Salary</p><h2 id="lr-salary" class="card-value success">Rs. 0.00</h2></div>
     </div>
 
     <div class="table-container" style="margin-top: 20px;">
         <table class="cart-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Time In</th>
-                    <th>Time Out</th>
-                    <th>Status</th>
-                    <th>Allowance</th>
-                    <th>Earned Salary</th>
-                </tr>
-            </thead>
+            <thead><tr><th>Date</th><th>Time In</th><th>Time Out</th><th>Worked Hours</th><th>Leave Status</th><th>Earned Salary</th></tr></thead>
             <tbody id="labor-report-body"></tbody>
         </table>
     </div>
@@ -3971,7 +3881,7 @@ function renderLaborList() {
         tbody.innerHTML += `<tr>
             <td>${lab.name}</td>
             <td>${lab.phone || '-'}</td>
-<td>${CURRENCY_SYMBOL}${lab.rate.toFixed(2)} / Day</td>
+            <td>${CURRENCY_SYMBOL}${lab.rate.toFixed(2)} / Month</td>
             <td><button class="btn btn-danger btn-sm" onclick="deleteLabor('${lab.id}')">Delete</button></td>
         </tr>`;
     });
@@ -4012,6 +3922,177 @@ function toggleLaborLeave() {
         document.getElementById('labor-time-out').value = '';
     }
     calculateLaborSalary();
+}
+
+function calculateLaborSalary() {
+    const laborId = document.getElementById('labor-select').value;
+    const isLeave = document.getElementById('labor-is-leave').checked;
+    const timeIn = document.getElementById('labor-time-in').value;
+    const timeOut = document.getElementById('labor-time-out').value;
+    const salaryEl = document.getElementById('labor-calculated-salary');
+
+    if (!laborId || isLeave) {
+        salaryEl.value = '0.00';
+        return;
+    }
+
+    if (timeIn && timeOut) {
+        const inDate = new Date(`1970-01-01T${timeIn}:00`);
+        const outDate = new Date(`1970-01-01T${timeOut}:00`);
+        
+        let diffHours = (outDate - inDate) / (1000 * 60 * 60);
+        if (diffHours < 0) diffHours += 24; // Agar shift raat ke 12 baje ke baad khatam ho
+
+        const labor = laborList.find(l => l.id === laborId);
+        
+        // --- Naya Calculation Logic ---
+        const monthlySalary = labor.rate || 0;     // Full Salary (e.g. 25000)
+        const dailyWage = monthlySalary / 30;     // Daily wage (Monthly Salary divided by 30)
+        const hourlyRate = dailyWage / 8;         // Hourly rate (Daily wage divided by 8 working hours)
+        
+        const earned = diffHours * hourlyRate;    // Jitne hours kaam kiya uski salary
+        
+        salaryEl.value = earned.toFixed(2);
+    } else {
+        salaryEl.value = '0.00';
+    }
+}
+
+async function saveLaborAttendance() {
+    const laborId = document.getElementById('labor-select').value;
+    const date = document.getElementById('labor-date').value;
+    const isLeave = document.getElementById('labor-is-leave').checked;
+    const timeIn = document.getElementById('labor-time-in').value;
+    const timeOut = document.getElementById('labor-time-out').value;
+    const earnedSalary = parseFloat(document.getElementById('labor-calculated-salary').value) || 0;
+
+    if (!laborId || !date) {
+        alert("Employee aur Date select karna lazmi hai.");
+        return;
+    }
+
+    if (!isLeave && (!timeIn || !timeOut)) {
+        alert("Agar leave nahi hai, to Time In aur Time Out dalna lazmi hai!");
+        return;
+    }
+
+    // Ek din me sirf ek entry hone ki logic
+    const existingIndex = laborAttendance.findIndex(a => a.laborId === laborId && a.date === date);
+    
+    const record = {
+        id: 'att_' + Date.now(),
+        laborId, date, isLeave, timeIn, timeOut, earnedSalary
+    };
+
+    if (existingIndex !== -1) {
+        if(confirm("Is din ki entry pehle se mojood hai, kya aap update karna chahte hain?")) {
+            laborAttendance[existingIndex] = record;
+        } else { return; }
+    } else {
+        laborAttendance.push(record);
+    }
+
+    // Cloud par Save
+    const userId = loggedInUser.id || loggedInUser.uid;
+    await db.collection('appData').doc(userId).collection('datasets').doc('labor_attendance').set({
+        payload: JSON.stringify(laborAttendance)
+    });
+
+    alert("Salary/Attendance record kamyabi se save ho gaya!");
+    
+    // Form Reset
+    document.getElementById('labor-is-leave').checked = false;
+    document.getElementById('labor-time-in').value = '';
+    document.getElementById('labor-time-out').value = '';
+    document.getElementById('labor-calculated-salary').value = '';
+    toggleLaborLeave();
+}
+
+function generateLaborReport() {
+    const laborId = document.getElementById('report-labor-select').value;
+    const monthVal = document.getElementById('report-labor-month').value; // Format: "YYYY-MM"
+
+    if (!laborId || !monthVal) {
+        alert("Employee aur Month dono select karein!");
+        return;
+    }
+
+    const tbody = document.getElementById('labor-report-body');
+    tbody.innerHTML = '';
+    
+    let totalPresent = 0, totalLeaves = 0, totalHours = 0, totalSalary = 0, totalAdvances = 0;
+
+    const filtered = laborAttendance.filter(a => a.laborId === laborId && a.date.startsWith(monthVal));
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Is mahine ka koi record nahi mila.</td></tr>';
+        document.getElementById('labor-report-summary').style.display = 'none';
+        return;
+    }
+
+    filtered.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(att => {
+        // Agar record advance payment hai to isko report table mein alag dikhein
+        if (att.isAdvance) {
+            totalAdvances += att.advanceAmount;
+            tbody.innerHTML += `
+                <tr style="background: rgba(239, 68, 68, 0.08);">
+                    <td>${new Date(att.date).toLocaleDateString()}</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td style="font-weight:bold; color:var(--danger-color);">💸 Advance Taken</td>
+                    <td style="font-weight:bold; color:var(--danger-color);">- ${CURRENCY_SYMBOL}${att.advanceAmount.toFixed(2)} (${att.notes || ''})</td>
+                </tr>
+            `;
+            return;
+        }
+
+        let workedHours = 0;
+        let leaveStatusText = '❌ Leave';
+        
+        if (!att.isLeave) {
+            leaveStatusText = '✅ Present';
+            totalPresent++;
+            totalSalary += att.earnedSalary;
+            
+            const inDate = new Date(`1970-01-01T${att.timeIn}:00`);
+            const outDate = new Date(`1970-01-01T${att.timeOut}:00`);
+            workedHours = (outDate - inDate) / (1000 * 60 * 60);
+            if (workedHours < 0) workedHours += 24;
+            totalHours += workedHours;
+        } else {
+            totalLeaves++;
+        }
+
+        tbody.innerHTML += `
+            <tr>
+                <td>${new Date(att.date).toLocaleDateString()}</td>
+                <td>${att.isLeave ? '-' : formatTimeFriendly(att.timeIn)}</td>
+                <td>${att.isLeave ? '-' : formatTimeFriendly(att.timeOut)}</td>
+                <td>${att.isLeave ? '-' : workedHours.toFixed(1) + ' hrs'}</td>
+                <td style="font-weight:bold; color:${att.isLeave ? 'var(--danger-color)' : 'var(--success-color)'};">${leaveStatusText}</td>
+                <td style="font-weight:bold;">${CURRENCY_SYMBOL}${att.earnedSalary.toFixed(2)}</td>
+            </tr>
+        `;
+    });
+
+    // Net payable calculations (Earned salary minus advances)
+    const netSalary = totalSalary - totalAdvances;
+
+    document.getElementById('lr-present-days').textContent = totalPresent;
+    document.getElementById('lr-leaves').textContent = totalLeaves;
+    document.getElementById('lr-hours').textContent = totalHours.toFixed(1);
+    
+    // Summary display ko breakdown ke sath update kiya
+    document.getElementById('lr-salary').innerHTML = `
+        Earned: ${CURRENCY_SYMBOL}${totalSalary.toFixed(2)}<br>
+        Advance: <span style="color:var(--danger-color); font-size: 0.95rem;">-${CURRENCY_SYMBOL}${totalAdvances.toFixed(2)}</span><br>
+        <span style="border-top: 1px solid var(--border-color); display:block; margin-top:5px; padding-top:5px; color:var(--success-color);">
+            Net Pay: ${CURRENCY_SYMBOL}${netSalary.toFixed(2)}
+        </span>
+    `;
+    
+    document.getElementById('labor-report-summary').style.display = 'grid';
 }
 
 
@@ -4058,7 +4139,10 @@ function populateCustomerWorkerDropdown() {
 // Customer ko save ya update karne ka function (with Try-Catch Error tracking)
 async function saveNewCustomer() {
     try {
+        console.log("Customer save process shuru ho raha hai...");
+
         const workerId = document.getElementById('cust-worker').value;
+        const item = document.getElementById('cust-item').value.trim();
         const name = document.getElementById('cust-name').value.trim();
         const phone = document.getElementById('cust-phone').value.trim();
         const address = document.getElementById('cust-address').value.trim();
@@ -4069,13 +4153,17 @@ async function saveNewCustomer() {
             return;
         }
 
-        const selectedWorker = (typeof demandWorkers !== 'undefined') ? demandWorkers.find(w => w.id === workerId) : null;
+        // Selected worker ki details hasil karna
+        const selectedWorker = (typeof demandWorkers !== 'undefined' && Array.isArray(demandWorkers)) 
+                               ? demandWorkers.find(w => w.id === workerId) 
+                               : null;
         const workerDetail = selectedWorker ? { name: selectedWorker.name, phone: selectedWorker.phone } : null;
 
         if (editingCustomerId) {
+            // Editing Mode
             const index = savedCustomersList.findIndex(c => c.id === editingCustomerId);
             if (index !== -1) {
-                savedCustomersList[index].item = "Alo"; // Force to Alo
+                savedCustomersList[index].item = item;
                 savedCustomersList[index].name = name;
                 savedCustomersList[index].phone = phone;
                 savedCustomersList[index].address = address;
@@ -4083,30 +4171,53 @@ async function saveNewCustomer() {
                 savedCustomersList[index].worker = workerDetail;
             }
         } else {
-            if (!appSettings.nextCustomerCode) appSettings.nextCustomerCode = 1001;
+            // New Registration Mode (Auto Code Generation with Safety Checks)
+            if (typeof appSettings === 'undefined' || !appSettings) {
+                appSettings = {};
+            }
+            if (typeof appSettings.nextCustomerCode === 'undefined' || isNaN(appSettings.nextCustomerCode)) {
+                appSettings.nextCustomerCode = 1001;
+            }
+
+            const generatedCode = "CUST-" + appSettings.nextCustomerCode;
+
             const newCust = {
                 id: 'cust_' + Date.now(),
-                code: "CUST-" + appSettings.nextCustomerCode,
-                item: "Alo", // Force to Alo
+                code: generatedCode,
+                item: item || 'N/A',
                 name: name,
                 phone: phone,
                 address: address || 'N/A',
                 price: price,
-                worker: workerDetail,
+                worker: workerDetail, // Worker details perfectly bind ho rahi hain
                 date: new Date().toISOString()
             };
+            
+            if (!Array.isArray(savedCustomersList)) {
+                savedCustomersList = [];
+            }
             savedCustomersList.push(newCust);
+
+            // Counter update aur Settings save karna
             appSettings.nextCustomerCode++;
             await saveSettings();
         }
 
-        await saveData(getUserSpecificKey('customers_list'), savedCustomersList);
-        alert("Customer data kamyabi se save ho gaya!");
+        // Native Firebase saving mechanism (Yahan se security rules pass ho jayenge)
+        // Native Firebase saving mechanism
+        const userSpecificKey = getUserSpecificKey('customers_list');
+        await saveData(userSpecificKey, savedCustomersList);
+        
+        alert("Customer data kamyabi se Cloud database mein save ho gaya!");
         clearCustomerForm();
         renderCustomerTable();
+        
+        // NAYA: Demand section ki slide list ko live update karein
+        populateCustomerNamesDatalist();
+        
     } catch (error) {
-        console.error("Save Error: ", error);
-        alert("System Error: " + error.message);
+        console.error("Save Customer Error: ", error);
+        alert("System Error: Customer data save nahi ho saka. Error detail: " + error.message);
     }
 }
 
@@ -4130,54 +4241,39 @@ function clearCustomerForm() {
     document.getElementById('btn-cancel-customer-edit').style.display = 'none';
 }
 
+// Edit mode load karne ka function
 function editCustomer(id) {
     const cust = savedCustomersList.find(c => c.id === id);
     if (!cust) return;
 
-    document.getElementById('modal-cust-id').value = cust.id;
-    document.getElementById('modal-cust-name').value = cust.name;
-    document.getElementById('modal-cust-phone').value = cust.phone;
-    document.getElementById('modal-cust-price').value = cust.price;
-    document.getElementById('modal-cust-item').value = 'Alo'; // Fixed to Alo
-
-    // Worker Dropdown Load Karein
-    const workerSelect = document.getElementById('modal-cust-worker');
-    workerSelect.innerHTML = '<option value="">-- Select Worker --</option>';
-    demandWorkers.forEach(w => {
-        const opt = document.createElement('option');
-        opt.value = w.id;
-        opt.textContent = w.name;
-        if (cust.worker && cust.worker.name === w.name) opt.selected = true;
-        workerSelect.appendChild(opt);
-    });
-
-    document.getElementById('edit-customer-modal').style.display = 'flex';
-}
-
-async function saveEditedCustomerFromModal() {
-    const id = document.getElementById('modal-cust-id').value;
-    const name = document.getElementById('modal-cust-name').value.trim();
-    const phone = document.getElementById('modal-cust-phone').value.trim();
-    const price = parseFloat(document.getElementById('modal-cust-price').value) || 0;
-    const workerId = document.getElementById('modal-cust-worker').value;
-
-    const index = savedCustomersList.findIndex(c => c.id === id);
-    if (index !== -1) {
-        // Worker details fetch karein
-        const selectedWorker = demandWorkers.find(w => w.id === workerId);
-        
-        savedCustomersList[index].name = name;
-        savedCustomersList[index].phone = phone;
-        savedCustomersList[index].price = price;
-        savedCustomersList[index].item = 'Alo'; // Forced Alo
-        savedCustomersList[index].worker = selectedWorker ? { name: selectedWorker.name, phone: selectedWorker.phone } : null;
+    editingCustomerId = id;
+    
+    document.getElementById('cust-code').value = cust.code || '';
+    
+    // Agar database mein item name nahi hai to 'Alo' dikhaye
+// Item hamesha 'Alo' par freeze rakhein (Edit karte waqt bhi change na ho)
+    document.getElementById('cust-item').value = 'Alo';
+    
+    document.getElementById('cust-name').value = cust.name || '';
+    document.getElementById('cust-phone').value = cust.phone || '';
+    document.getElementById('cust-address').value = cust.address || '';
+    document.getElementById('cust-price').value = cust.price || '';
+    
+    // Dropdown mein selected worker set karna
+    const workerSelect = document.getElementById('cust-worker');
+    if (workerSelect && cust.worker) {
+        const workerObj = demandWorkers.find(w => w.name === cust.worker.name && w.phone === cust.worker.phone);
+        workerSelect.value = workerObj ? workerObj.id : '';
+    } else if (workerSelect) {
+        workerSelect.value = '';
     }
 
-    await saveData(getUserSpecificKey('customers_list'), savedCustomersList);
-    
-    alert("Customer details updated with Item: Alo and selected worker!");
-    document.getElementById('edit-customer-modal').style.display = 'none';
-    renderCustomerTable();
+    document.getElementById('customer-form-title').textContent = "Edit Customer Details";
+    document.getElementById('btn-save-customer').textContent = "Update Customer";
+    document.getElementById('btn-save-customer').className = "btn btn-warning";
+    document.getElementById('btn-cancel-customer-edit').style.display = 'inline-flex';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Table render karne ka function (Live Search Filter ke sath)
@@ -4186,19 +4282,23 @@ function renderCustomerTable() {
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    const query = (document.getElementById('cust-search-input')?.value || '').toLowerCase().trim();
+    const searchInput = document.getElementById('cust-search-input');
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-    let filteredList = savedCustomersList || [];
+    let filteredList = Array.isArray(savedCustomersList) ? savedCustomersList : [];
     if (query) {
         filteredList = filteredList.filter(cust => 
-            cust.name.toLowerCase().includes(query) || cust.phone.includes(query)
+            (cust.code && cust.code.toLowerCase().includes(query)) ||
+            (cust.name && cust.name.toLowerCase().includes(query)) ||
+            (cust.phone && cust.phone.toLowerCase().includes(query)) ||
+            (cust.item && cust.item.toLowerCase().includes(query)) ||
+            (cust.worker && cust.worker.name && cust.worker.name.toLowerCase().includes(query))
         );
     }
 
     filteredList.forEach(cust => {
         const row = document.createElement('tr');
-        // Yahan "Alo" ka logic apply kiya hai
-        const displayItem = (cust.item === "N/A" || !cust.item || cust.item === "") ? "Alo" : cust.item;
+        const safePrice = Number(cust.price) || 0;
         const workerName = cust.worker ? cust.worker.name : 'N/A';
 
         row.innerHTML = `
@@ -4207,9 +4307,9 @@ function renderCustomerTable() {
             <td><strong>${cust.name || '-'}</strong></td>
             <td>${cust.phone || '-'}</td>
             <td>${cust.address || '-'}</td>
-            <td>${displayItem}</td> 
+            <td>${cust.item || '-'}</td>
             <td style="color: var(--accent-color); font-weight: bold;">${workerName}</td>
-            <td style="font-weight: bold; color: var(--success-color);">${CURRENCY_SYMBOL}${Number(cust.price || 0).toFixed(2)}</td>
+            <td style="font-weight: bold; color: var(--success-color);">${CURRENCY_SYMBOL}${safePrice.toFixed(2)}</td>
             <td>
                 <div style="display: flex; gap: 5px;">
                     <button class="btn btn-sm btn-warning" onclick="editCustomer('${cust.id}')">Edit</button>
@@ -5005,13 +5105,14 @@ function getLocalDateString(dateInput = getCloudDate()) {
     // --- FIREBASE CONFIGURATION ---
 // --- FIREBASE CONFIGURATION (NEW) ---
 const firebaseConfig = {
-  apiKey: "AIzaSyAXjJp2JPbtYKMErJIvl0Z8mOmesT4O8d4",
-  authDomain: "umerbrothers-95121.firebaseapp.com",
-  projectId: "umerbrothers-95121",
-  storageBucket: "umerbrothers-95121.firebasestorage.app",
-  messagingSenderId: "1067961319737",
-  appId: "1:1067961319737:web:c54daf264fcd7dd1b528e8",
-  measurementId: "G-7JM1DW8JVZ"
+  apiKey: "AIzaSyAWPOI7GimMKFXo8EnfgJGR0KH7hKhmmEc",
+  authDomain: "fjmmobilesoftwarejk.firebaseapp.com",
+  databaseURL: "https://fjmmobilesoftwarejk-default-rtdb.firebaseio.com",
+  projectId: "fjmmobilesoftwarejk",
+  storageBucket: "fjmmobilesoftwarejk.firebasestorage.app",
+  messagingSenderId: "262665206720",
+  appId: "1:262665206720:web:d52f3c9b6636cceda82625",
+  measurementId: "G-CZF6EDL956"
 };
 
 // Initialize Firebase
@@ -5031,8 +5132,6 @@ const defaultProducts =[];
 
 // --- Application State Variables ---
 let appSettings = {}, products = [], salesLog = [], demandRecords = [], users = [], sessions = [], notifications =[], expenses =[], expenseCategories = [], partialPaymentInvoices =[], purchasers = [], purchaseLog = [], cashBookLog =[], gatePassLog =[], sellReturnsLog =[], stockUpdatesLog =[], selectedCategory = "All", selectedProductIdToManage = null, selectedInvoiceId = null, currentImageBase64 = null, loggedInUser = null;
-let expenseStockInventory = []; // Live available stock track karne ke liye
-let expenseStockLog = [];       // Dispatched stock history ke liye
 
 const { jsPDF } = window.jspdf;
 
@@ -5187,9 +5286,7 @@ async function syncDataFromFirebase() {
         CASH_BOOK_KEY,
         GATE_PASS_LOG_KEY,
         SELL_RETURNS_KEY,
-        STOCK_UPDATES_KEY,
-        "pos_app_expense_stock_inventory",
-        "pos_app_expense_stock_log"
+        STOCK_UPDATES_KEY
     ];
 
     // Status bar par syncing ka message dikhane ke liye
@@ -5364,21 +5461,7 @@ const saveGatePassLog = () => saveData(getUserSpecificKey(GATE_PASS_LOG_KEY), ga
 const saveSellReturnsLog = () => saveData(getUserSpecificKey(SELL_RETURNS_KEY), sellReturnsLog);
 const saveStockUpdatesLog = () => saveData(getUserSpecificKey(STOCK_UPDATES_KEY), stockUpdatesLog);
 async function dbFetchProducts() { products = await dbFetchData(PRODUCTS_KEY); }
-
-async function dbFetchExpenseStockInventory() {
-    expenseStockInventory = await dbFetchData("pos_app_expense_stock_inventory") || [];
-}
-async function dbFetchExpenseStockLog() {
-    expenseStockLog = await dbFetchData("pos_app_expense_stock_log") || [];
-}
-const saveExpenseStockInventory = () => {
-    localStorage.setItem(getUserSpecificKey("pos_app_expense_stock_inventory"), JSON.stringify(expenseStockInventory));
-    saveData(getUserSpecificKey("pos_app_expense_stock_inventory"), expenseStockInventory);
-};
-const saveExpenseStockLog = () => {
-    localStorage.setItem(getUserSpecificKey("pos_app_expense_stock_log"), JSON.stringify(expenseStockLog));
-    saveData(getUserSpecificKey("pos_app_expense_stock_log"), expenseStockLog);
-};async function dbFetchInvoices() { partialPaymentInvoices = await dbFetchData("pos_app_partial_invoices"); }
+async function dbFetchInvoices() { partialPaymentInvoices = await dbFetchData("pos_app_partial_invoices"); }
 async function dbFetchExpenses() { expenses = await dbFetchData(EXPENSES_KEY); }
 async function dbFetchPurchasers() { purchasers = await dbFetchData(PURCHASERS_KEY); }
 async function dbFetchPurchaseLog() { purchaseLog = await dbFetchData(PURCHASE_LOG_KEY); }
@@ -7325,12 +7408,14 @@ function generateExpenseVoucherPDF(expense) {
     doc.setFontSize(18); doc.text('Expense Voucher', 105, yPos, { align: 'center' }); yPos += 10;
     doc.setFontSize(10); doc.text(`Voucher ID: ${expense.id}`, 14, yPos); yPos += 10;
 
+    // Sahi matching properties shamil ki hain
     const expenseDetails = [
         ['Date:', new Date(expense.date).toLocaleDateString()],
         ['Category:', expense.category],
         ['Description:', expense.description || 'N/A'],
-        ['Product Name:', expense.productName || 'N/A'],
-        ['Stock Quantity:', expense.stockQty || 'N/A'],
+        ['Rider Name:', expense.riderName || 'N/A'],       // Safe camelCase call
+        ['Number Plate:', expense.numberPlate || 'N/A'],   // Safe camelCase call
+        ['Parts:', expense.parts || 'N/A'],               // Safe camelCase call
         ['Amount Paid:', `${CURRENCY_SYMBOL} ${expense.amount.toFixed(2)}`]
     ];
 
@@ -7341,7 +7426,7 @@ function generateExpenseVoucherPDF(expense) {
         styles: { fontSize: 12, cellPadding: 3 },
         columnStyles: { 0: { fontStyle: 'bold' } },
         didParseCell: function (data) {
-            if (data.row.index === 5) { 
+            if (data.row.index === 6) { // Bold Total Amount row
                 data.cell.styles.fontStyle = 'bold';
                 data.cell.styles.fontSize = 14;
             }
@@ -7369,11 +7454,14 @@ function addExpense() {
     const description = document.getElementById('expense-description').value.trim();
     const date = document.getElementById('expense-date').value;
 
-    const productNameEl = document.getElementById('expense-product-name');
-    const stockQtyEl = document.getElementById('expense-stock-quantity');
+    // Elements aur unki values read karne ke liye naye variables banaye hain
+    const riderNameEl = document.getElementById('expense-rider-name');
+    const numberPlateEl = document.getElementById('expense-number-plate');
+    const partsEl = document.getElementById('expense-parts');
 
-    const productName = productNameEl ? productNameEl.value.trim() : '';
-    const stockQty = stockQtyEl ? parseFloat(stockQtyEl.value) || 0 : 0;
+    const riderName = riderNameEl ? riderNameEl.value.trim() : '';
+    const numberPlate = numberPlateEl ? numberPlateEl.value.trim() : '';
+    const parts = partsEl ? partsEl.value.trim() : '';
 
     if (!category || isNaN(amount) || amount <= 0 || !date) {
         alert("Please fill in all required fields (Category, Amount, Date).");
@@ -7385,33 +7473,19 @@ function addExpense() {
         category: category,
         amount: amount,
         description: description,
-        productName: productName,
-        stockQty: stockQty,
+        riderName: riderName,        // CamelCase value assign ho rahi hai
+        numberPlate: numberPlate,    // CamelCase value assign ho rahi hai
+        parts: parts,                // CamelCase value assign ho rahi hai
         date: date,
         createdAt: new Date().toISOString()
     };
 
     expenses.push(newExpense);
     saveExpenses();
-
-    if (productName && stockQty > 0) {
-        let existingStock = expenseStockInventory.find(s => s.name.toLowerCase() === productName.toLowerCase());
-        if (existingStock) {
-            existingStock.quantity += stockQty;
-        } else {
-            expenseStockInventory.push({
-                id: 'esi' + Date.now(),
-                name: productName,
-                category: category,
-                quantity: stockQty
-            });
-        }
-        saveExpenseStockInventory();
-    }
-
+    
     addTransactionToCashBook(`Expense: ${category} - ${description}`, 'out', amount, date, 'cb_exp_' + newExpense.id);
 
-    alert("Expense & Stock recorded successfully!");
+    alert("Expense added successfully!");
     generateExpenseVoucherPDF(newExpense);
     refreshAll();
     
@@ -7434,8 +7508,10 @@ function editExpense(expenseId) {
     document.getElementById('expense-description').value = expense.description;
     document.getElementById('expense-date').value = expense.date;
 
-    if (document.getElementById('expense-product-name')) document.getElementById('expense-product-name').value = expense.productName || '';
-    if (document.getElementById('expense-stock-quantity')) document.getElementById('expense-stock-quantity').value = expense.stockQty || '';
+    // Naye fields ki values form inputs mein wapas load karne ke liye
+    if (document.getElementById('expense-rider-name')) document.getElementById('expense-rider-name').value = expense.riderName || '';
+    if (document.getElementById('expense-number-plate')) document.getElementById('expense-number-plate').value = expense.numberPlate || '';
+    if (document.getElementById('expense-parts')) document.getElementById('expense-parts').value = expense.parts || '';
 
     document.getElementById('btn-add-expense').style.display = 'none';
     document.getElementById('btn-save-expense-changes').style.display = 'inline-flex';
@@ -7452,7 +7528,7 @@ function saveExpenseChanges() {
     const expenseIndex = expenses.findIndex(e => e.id === editingExpenseId);
     if (expenseIndex === -1) {
         alert("Original expense record not found.");
-        clearExpenseForm(true);
+        resetExpenseForm();
         return;
     }
 
@@ -7463,8 +7539,10 @@ function saveExpenseChanges() {
     const newDescription = document.getElementById('expense-description').value.trim();
     const newDate = document.getElementById('expense-date').value;
     
-    const newProductName = document.getElementById('expense-product-name') ? document.getElementById('expense-product-name').value.trim() : '';
-    const newStockQty = document.getElementById('expense-stock-quantity') ? parseFloat(document.getElementById('expense-stock-quantity').value) || 0 : 0;
+    // Naye parameters ki values read karna
+    const newRiderName = document.getElementById('expense-rider-name') ? document.getElementById('expense-rider-name').value.trim() : '';
+    const newNumberPlate = document.getElementById('expense-number-plate') ? document.getElementById('expense-number-plate').value.trim() : '';
+    const newParts = document.getElementById('expense-parts') ? document.getElementById('expense-parts').value.trim() : '';
 
     if (!newCategory || isNaN(newAmount) || newAmount <= 0 || !newDate) {
         alert("Please fill in all required fields (Category, Amount, Date).");
@@ -7476,8 +7554,9 @@ function saveExpenseChanges() {
     expenses[expenseIndex].category = newCategory;
     expenses[expenseIndex].amount = newAmount;
     expenses[expenseIndex].description = newDescription;
-    expenses[expenseIndex].productName = newProductName;
-    expenses[expenseIndex].stockQty = newStockQty;
+    expenses[expenseIndex].riderName = newRiderName;
+    expenses[expenseIndex].numberPlate = newNumberPlate;
+    expenses[expenseIndex].parts = newParts;
     expenses[expenseIndex].date = newDate;
 
     saveExpenses();
@@ -7536,23 +7615,35 @@ function renderExpensesList() {
     let totalAmount = 0;
 
     sortedExpenses.forEach(expense => {
-        totalAmount += expense.amount;
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${new Date(expense.date).toLocaleDateString()}</td>
-            <td>${expense.category}</td>
-            <td>${expense.description}</td>
-            <td>${expense.productName || '-'}</td>
-            <td>${expense.stockQty || '-'}</td>
-            <td>${CURRENCY_SYMBOL}${expense.amount.toFixed(2)}</td>
-            <td><button class="btn btn-sm btn-warning" onclick="editExpense('${expense.id}')">Edit</button></td>
-        `;
-        tbody.appendChild(row);
-    });
+    totalAmount += expense.amount;
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td>${new Date(expense.date).toLocaleDateString()}</td>
+        <td>${expense.category}</td>
+        <td>${expense.description}</td>
+        <td>${expense.riderName || '-'}</td>
+        <td>${expense.numberPlate || '-'}</td>
+        <td>${expense.parts || '-'}</td>
+        <td>${CURRENCY_SYMBOL}${expense.amount.toFixed(2)}</td>
+        <td><button class="btn btn-sm btn-warning" onclick="editExpense('${expense.id}')">Edit</button></td>
+    `;
+    tbody.appendChild(row);
+});
 
     if (filterNameDisplay) {
         let text = "Expenses";
         if (categoryFilter !== 'All') text = categoryFilter + " Expenses";
+        if (fromDateVal && toDateVal) {
+            text += ` (From ${new Date(fromDateVal).toLocaleDateString()} to ${new Date(toDateVal).toLocaleDateString()})`;
+        } else if (fromDateVal) {
+            text += ` (From ${new Date(fromDateVal).toLocaleDateString()})`;
+        } else if (toDateVal) {
+            text += ` (Up to ${new Date(toDateVal).toLocaleDateString()})`;
+        }
+        filterNameDisplay.textContent = text;
+    }
+
+    if (totalDisplay) {
         totalDisplay.textContent = `${CURRENCY_SYMBOL}${totalAmount.toFixed(2)}`;
     }
 }
@@ -7563,6 +7654,7 @@ function clearExpenseForm(isAfterAction = false) {
     document.getElementById('expense-description').value = '';
     document.getElementById('expense-date').value = getLocalDateString(getCloudDate());
 
+
     if (isAfterAction) {
         editingExpenseId = null;
         document.getElementById('expense-form-title').textContent = 'Add New Expense';
@@ -7570,9 +7662,13 @@ function clearExpenseForm(isAfterAction = false) {
         document.getElementById('btn-save-expense-changes').style.display = 'none';
         document.getElementById('btn-cancel-expense-edit').style.display = 'none';
         document.getElementById('btn-clear-expense-form').style.display = 'inline-flex';
-        if (document.getElementById('expense-product-name')) document.getElementById('expense-product-name').value = '';
-        if (document.getElementById('expense-stock-quantity')) document.getElementById('expense-stock-quantity').value = '';
+    if (document.getElementById('expense-rider-name')) document.getElementById('expense-rider-name').value = '';
+    if (document.getElementById('expense-number-plate')) document.getElementById('expense-number-plate').value = '';
+    if (document.getElementById('expense-parts')) document.getElementById('expense-parts').value = '';
+    
     }
+
+    
 }
 
 function generateExpensePDF(reportType) {
@@ -7607,22 +7703,32 @@ function generateExpensePDF(reportType) {
     doc.setFontSize(10); doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, yPos, { align: 'center' }); yPos += 12;
 
     const tableData = filteredExpenses.map(expense =>[
-        new Date(expense.date  + 'T00:00:00').toLocaleDateString(),
-        expense.category,
-        expense.description || '-',
-        expense.productName || '-',
-        expense.stockQty || '-',
-        `${CURRENCY_SYMBOL}${expense.amount.toFixed(2)}`
-    ]);
+    new Date(expense.date  + 'T00:00:00').toLocaleDateString(),
+    expense.category,
+    expense.description || '-',
+    expense.riderName || '-',       // Map row
+    expense.numberPlate || '-',   // Map row
+    expense.parts || '-',               // Map row
+    `${CURRENCY_SYMBOL}${expense.amount.toFixed(2)}`
+]);
 
-    doc.autoTable({
-        startY: yPos,
-        head: [['Date', 'Category', 'Description', 'Product Name', 'Quantity', 'Amount']],
-        body: tableData,
-        theme: 'grid',
-        headStyles: { fillColor: [42, 105, 185], textColor: 255, fontStyle: 'bold' },
-        margin: { left: 14, right: 14 }
-    });
+doc.autoTable({
+    startY: yPos,
+    head: [['Date', 'Category', 'Description', 'Rider Name', 'Number Plate', 'Parts', 'Amount']], // Updated table headers
+    body: tableData,
+    theme: 'grid',
+    headStyles: { fillColor: [42, 105, 185], textColor: 255, fontStyle: 'bold' },
+    margin: { left: 14, right: 14 }
+});
+
+doc.autoTable({
+    startY: yPos,
+    head: [['Date', 'Category', 'Description', 'Rider Name', 'Number Plate', 'Parts', 'Amount']],
+    body: tableData,
+    theme: 'grid',
+    headStyles: { fillColor: [42, 105, 185], textColor: 255, fontStyle: 'bold' },
+    margin: { left: 14, right: 14 }
+});
     const finalY = doc.previousAutoTable.finalY + 10;
 
     doc.setFontSize(14); doc.setFont('helvetica', 'bold');
@@ -10035,171 +10141,6 @@ function generateProfitLossPDF() {
     doc.save(`Profit_Loss_${new Date().toISOString().split('T')[0]}.pdf`);
 }
 
-// =========================================================
-// DYNAMIC EXPENSE STOCK MODULE FUNCTIONS
-// =========================================================
-function populateExpenseStockInventoryDropdown() {
-    const select = document.getElementById('es-inventory-select');
-    if (!select) return;
-    select.innerHTML = '<option value="">-- Select Available Stock Item --</option>';
-    
-    expenseStockInventory.forEach(item => {
-        if (item.quantity > 0) {
-            const option = document.createElement('option');
-            option.value = item.id;
-            option.textContent = `${item.name} (${item.category}) - Available: ${item.quantity}`;
-            select.appendChild(option);
-        }
-    });
-}
-
-function updateSelectedStockAvailability() {
-    const select = document.getElementById('es-inventory-select');
-    const selectedId = select.value;
-    const availableInput = document.getElementById('es-available-qty');
-    const remainingInput = document.getElementById('es-new-remaining');
-    const qtyGoingInput = document.getElementById('es-qty-going');
-
-    if (!selectedId) {
-        availableInput.value = '';
-        remainingInput.value = '';
-        qtyGoingInput.value = '';
-        return;
-    }
-
-    const item = expenseStockInventory.find(s => s.id === selectedId);
-    if (item) {
-        availableInput.value = item.quantity;
-        qtyGoingInput.value = '';
-        remainingInput.value = item.quantity;
-    }
-}
-
-function calculateExpenseStockNewRemaining() {
-    const available = parseFloat(document.getElementById('es-available-qty').value) || 0;
-    const going = parseFloat(document.getElementById('es-qty-going').value) || 0;
-    const remaining = available - going;
-    document.getElementById('es-new-remaining').value = remaining >= 0 ? remaining : 0;
-}
-
-async function saveExpenseStock() {
-    const select = document.getElementById('es-inventory-select');
-    const selectedId = select.value;
-    const qtyGoing = parseFloat(document.getElementById('es-qty-going').value);
-    const user = document.getElementById('es-user').value.trim() || 'N/A';
-    const date = document.getElementById('es-date').value;
-
-    if (!selectedId) {
-        alert("Meharbani karke pehle list se available stock select karein.");
-        return;
-    }
-    if (isNaN(qtyGoing) || qtyGoing <= 0) {
-        alert("Meharbani karke nikalne wale stock ki sahi miqdar enter karein.");
-        return;
-    }
-
-    const item = expenseStockInventory.find(s => s.id === selectedId);
-    if (!item) return;
-
-    if (qtyGoing > item.quantity) {
-        alert(`Ghalti: Aap ke paas is waqt sirf ${item.quantity} stock mojud hai!`);
-        return;
-    }
-
-    item.quantity -= qtyGoing;
-
-    const logEntry = {
-        id: 'esl' + Date.now(),
-        inventoryId: item.id,
-        productName: item.name,
-        category: item.category,
-        user: user,
-        qtyTaken: qtyGoing,
-        remainingStock: item.quantity,
-        date: date
-    };
-
-    expenseStockLog.push(logEntry);
-
-    saveExpenseStockInventory();
-    saveExpenseStockLog();
-
-    alert("Stock database se deduct ho gaya!");
-    clearExpenseStockForm();
-    populateExpenseStockInventoryDropdown();
-    renderExpenseStockInventoryTable();
-    renderExpenseStockTable();
-}
-
-function clearExpenseStockForm() {
-    document.getElementById('es-inventory-select').value = '';
-    document.getElementById('es-available-qty').value = '';
-    document.getElementById('es-qty-going').value = '';
-    document.getElementById('es-new-remaining').value = '';
-    document.getElementById('es-user').value = '';
-    document.getElementById('es-date').value = getLocalDateString(getCloudDate());
-}
-
-function renderExpenseStockInventoryTable() {
-    const tbody = document.getElementById('es-inventory-tbody');
-    if (!tbody) return;
-    tbody.innerHTML = '';
-
-    const validInventory = expenseStockInventory.filter(item => item.quantity > 0);
-
-    if (validInventory.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Inventory empty hai. Add Expense se shamil karein.</td></tr>';
-        return;
-    }
-
-    validInventory.forEach(item => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td><strong>${item.name}</strong></td>
-            <td>${item.category}</td>
-            <td style="font-weight:bold; color:var(--success-color);">${item.quantity}</td>
-        `;
-        tbody.appendChild(row);
-    });
-}
-
-// Dynamic history logs renderer
-function renderExpenseStockTable() {
-    const tbody = document.getElementById('es-table-body');
-    if (!tbody) return;
-    tbody.innerHTML = '';
-
-    const sortedLogs = [...expenseStockLog].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    if (sortedLogs.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Koi history record mojud nahi hai.</td></tr>';
-        return;
-    }
-
-    sortedLogs.forEach(log => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${new Date(log.date).toLocaleDateString()}</td>
-            <td><strong>${log.productName}</strong></td>
-            <td>${log.category}</td>
-            <td>${log.user}</td>
-            <td style="color:var(--danger-color); font-weight:bold;">${log.qtyTaken}</td>
-            <td style="font-weight:bold;">${log.remainingStock}</td>
-            <td>
-                <button class="btn btn-sm btn-danger" onclick="deleteExpenseStock('${log.id}')">Delete</button>
-            </td>
-        `;
-        tbody.appendChild(row);
-    });
-}
-
-async function deleteExpenseStock(id) {
-    if (!confirm("Are you sure you want to delete this log?")) return;
-    expenseStockLog = expenseStockLog.filter(log => log.id !== id);
-    saveExpenseStockLog();
-    renderExpenseStockTable();
-}
-
 // --- ALL REPORTS MODULE FUNCTIONS ---
 function initializeAllReports() {
     document.getElementById('ar-btn-daily').addEventListener('click', () => setAllReportsFilter('daily'));
@@ -10855,8 +10796,6 @@ function saveAllDataToFile() {
         sellReturnsLog: sellReturnsLog,
         stockUpdatesLog: stockUpdatesLog,
         appSettings: appSettings,
-        expenseStockInventory: expenseStockInventory,
-        expenseStockLog: expenseStockLog,
     };
 
     const jsonString = JSON.stringify(allData, null, 2); 
@@ -10909,14 +10848,7 @@ function loadAllDataFromFile(event) {
                 gatePassLog = loadedData.gatePassLog || [];
                 sellReturnsLog = loadedData.sellReturnsLog || [];
                 stockUpdatesLog = loadedData.stockUpdatesLog || [];
-            expenseStockInventory = loadedData.expenseStockInventory || [];
-            expenseStockLog = loadedData.expenseStockLog || [];
-            appSettings = loadedData.appSettings || {};
-
-            saveExpenseStockInventory();
-            saveExpenseStockLog();
-
-            // Save karein (Yahan crash hone ka khatra hota hai agar memory full ho)
+                appSettings = loadedData.appSettings || {};
 
                 // Save karein (Yahan crash hone ka khatra hota hai agar memory full ho)
                 saveProducts();
@@ -11736,8 +11668,6 @@ await dbFetchGatePasses();
 await dbFetchStockUpdates();
 await dbFetchSellReturns();
 await dbFetchMaalPurchases(); 
-await dbFetchExpenseStockInventory();
-await dbFetchExpenseStockLog();
 refreshAll();
 }
 
@@ -11948,19 +11878,11 @@ async function openModule(evt, moduleName) {
             }
         }
         if (actualModuleName === 'ExpenseHistory') {
-    await dbFetchExpenses();
-    await dbFetchCategories();
-    populateExpenseCategoryDropdowns();
-    renderExpensesList();
-}
-if (actualModuleName === 'ExpenseStock') {
-    await dbFetchExpenseStockInventory();
-    await dbFetchExpenseStockLog();
-    populateExpenseStockInventoryDropdown();
-    document.getElementById('es-date').value = getLocalDateString(getCloudDate());
-    renderExpenseStockInventoryTable();
-    renderExpenseStockTable();
-}
+            await dbFetchExpenses();
+            await dbFetchCategories();
+            populateExpenseCategoryDropdowns();
+            renderExpensesList();
+        }
         if (actualModuleName === 'CashBook') {
             await dbFetchPurchaseLog();
             await dbFetchCashBook();
@@ -13240,7 +13162,16 @@ function handlePendingDemandSelection() {
     const selectedId = select.value;
 
     if (!selectedId) {
-        // (Baaki code wesa hi rahe...)
+        // Agar kuch select nahi hai toh sab clear kar do
+        document.getElementById('dr-display-date').value = '';
+        document.getElementById('dr-display-customer').value = '';
+        document.getElementById('dr-display-item').value = '';
+        document.getElementById('dr-display-qty').value = '';
+        document.getElementById('dr-rate').value = '';
+        document.getElementById('dr-bill').value = '';
+        document.getElementById('dr-old-balance').value = '';
+        document.getElementById('dr-recovery').value = '';
+        document.getElementById('dr-net-balance').value = '';
         return;
     }
 
@@ -13251,21 +13182,25 @@ function handlePendingDemandSelection() {
         document.getElementById('dr-display-item').value = record.itemName || '';
         document.getElementById('dr-display-qty').value = record.demand || 0;
 
-        // --- YEH NAYA CODE ADD KAREIN ---
+        // --- NEW LOGIC: RATE AUTOMATION ---
         let autoRate = 0;
-        
-        // savedCustomersList se price dhoondna
+        // Hum 'savedCustomersList' mein jayenge aur customer ke naam se match karenge
         if (typeof savedCustomersList !== 'undefined' && Array.isArray(savedCustomersList)) {
             const customerProfile = savedCustomersList.find(c => c.name.toLowerCase() === record.customer.toLowerCase());
             if (customerProfile && customerProfile.price) {
-                autoRate = customerProfile.price; 
+                autoRate = customerProfile.price; // Add Customer mein jo price di thi wo yahan aa gayi
             }
         }
         
-        // Rate field mein value set karna
-        document.getElementById('dr-rate').value = autoRate.toFixed(2);
-        
-        // Calculations ko trigger karna
+        // Rate box mein value daalna
+        document.getElementById('dr-rate').value = autoRate;
+        // ----------------------------------
+
+        // Reset other calculation fields
+        document.getElementById('dr-old-balance').value = '';
+        document.getElementById('dr-recovery').value = '';
+
+        // calculation ko update karna
         calculateDemandRecordMath();
     }
 }
@@ -13273,12 +13208,12 @@ function handlePendingDemandSelection() {
 // 3. Automatic Multiplication (Qty * Rate) aur Balance Calculations
 function calculateDemandRecordMath() {
     const qty = parseFloat(document.getElementById('dr-display-qty').value) || 0;
-    const rate = parseFloat(document.getElementById('dr-rate').value) || 0; // Ye ab auto-fill ho kar yahan aayega
+    const rate = parseFloat(document.getElementById('dr-rate').value) || 0;
     const oldBalance = parseFloat(document.getElementById('dr-old-balance').value) || 0;
     const recovery = parseFloat(document.getElementById('dr-recovery').value) || 0;
 
-    const bill = qty * rate; // Bill update ho jayega
-    const netBalance = (bill + oldBalance) - recovery; 
+    const bill = qty * rate; // Automatic Multiplication
+    const netBalance = (bill + oldBalance) - recovery; // Live remaining balance
 
     document.getElementById('dr-bill').value = bill.toFixed(2);
     document.getElementById('dr-net-balance').value = netBalance.toFixed(2);
@@ -13995,15 +13930,49 @@ async function saveNewCustomer() {
 function clearCustomerForm() {
     document.getElementById('cust-code').value = '';
     document.getElementById('cust-worker').value = '';
-    document.getElementById('cust-item').value = 'Alo'; // Default to Alo
+    document.getElementById('cust-item').value = '';
     document.getElementById('cust-name').value = '';
     document.getElementById('cust-phone').value = '';
     document.getElementById('cust-address').value = '';
     document.getElementById('cust-price').value = '';
     
     editingCustomerId = null;
+    
     document.getElementById('customer-form-title').textContent = "Customer Details";
     document.getElementById('btn-save-customer').textContent = "Save Customer";
+    document.getElementById('btn-save-customer').className = "btn btn-success";
+    document.getElementById('btn-cancel-customer-edit').style.display = 'none';
+}
+
+// Edit mode load karne ka function
+function editCustomer(id) {
+    const cust = savedCustomersList.find(c => c.id === id);
+    if (!cust) return;
+
+    editingCustomerId = id;
+    
+    document.getElementById('cust-code').value = cust.code || '';
+    document.getElementById('cust-item').value = cust.item || '';
+    document.getElementById('cust-name').value = cust.name || '';
+    document.getElementById('cust-phone').value = cust.phone || '';
+    document.getElementById('cust-address').value = cust.address || '';
+    document.getElementById('cust-price').value = cust.price || '';
+
+    // Dropdown mein worker select karna
+    const workerSelect = document.getElementById('cust-worker');
+    if (workerSelect && cust.worker) {
+        const workerObj = demandWorkers.find(w => w.name === cust.worker.name && w.phone === cust.worker.phone);
+        workerSelect.value = workerObj ? workerObj.id : '';
+    } else if (workerSelect) {
+        workerSelect.value = '';
+    }
+
+    document.getElementById('customer-form-title').textContent = "Edit Customer Details";
+    document.getElementById('btn-save-customer').textContent = "Update Customer";
+    document.getElementById('btn-save-customer').className = "btn btn-warning";
+    document.getElementById('btn-cancel-customer-edit').style.display = 'inline-flex';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Table render karne ka function (Live Search Filter ke sath)
@@ -14389,475 +14358,6 @@ async function saveUpdatedDemand() {
     }
 }
 
-// 1. Button par click karne se abhi ka waqt khud-ba-khud (automatically) set karne ka function
-function setAttendanceTime(inputId) {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    document.getElementById(inputId).value = `${hours}:${minutes}`;
-}
-
-// 1. Existing attendance check karna (Allowance ke sath)
-function checkExistingAttendance() {
-    const laborId = document.getElementById('labor-select').value;
-    const date = document.getElementById('labor-date').value;
-    
-    if (!laborId || !date) return;
-    
-    const existingRecord = laborAttendance.find(a => a.laborId === laborId && a.date === date && !a.isAdvance);
-    
-    if (existingRecord) {
-        document.getElementById('labor-status').value = existingRecord.status || 'Present';
-        document.getElementById('labor-time-in').value = (existingRecord.timeIn && existingRecord.timeIn !== '-') ? existingRecord.timeIn : '';
-        document.getElementById('labor-time-out').value = (existingRecord.timeOut && existingRecord.timeOut !== '-') ? existingRecord.timeOut : '';
-        document.getElementById('labor-allowance').value = existingRecord.allowance || ''; // Allowance load karega
-    } else {
-        document.getElementById('labor-time-in').value = '';
-        document.getElementById('labor-time-out').value = '';
-        document.getElementById('labor-status').value = 'Present';
-        document.getElementById('labor-allowance').value = '';
-    }
-    
-    calculateLaborSalary();
-}
-
-// 2. Salary Calculate karna (Allowance add kar ke)
-function calculateLaborSalary() {
-    const laborId = document.getElementById('labor-select').value;
-    const status = document.getElementById('labor-status').value;
-    const allowance = parseFloat(document.getElementById('labor-allowance').value) || 0; // Allowance uthayega
-    const salaryEl = document.getElementById('labor-calculated-salary');
-
-    if (!laborId) {
-        salaryEl.value = '0.00';
-        return;
-    }
-
-    const labor = laborList.find(l => l.id === laborId);
-    const dailyWage = labor.rate || 0; 
-
-    // Agar Present hai to (Base Salary + Allowance), warna sirf Allowance
-    if (status === 'Present') {
-        salaryEl.value = (dailyWage + allowance).toFixed(2);
-    } else {
-        salaryEl.value = allowance.toFixed(2);
-    }
-}
-
-// 3. Record Save karna (Allowance database mein bhejna)
-async function saveLaborAttendance() {
-    const laborId = document.getElementById('labor-select').value;
-    const date = document.getElementById('labor-date').value;
-    const status = document.getElementById('labor-status').value;
-    const timeIn = document.getElementById('labor-time-in').value || '-';
-    const timeOut = document.getElementById('labor-time-out').value || '-';
-    const allowance = parseFloat(document.getElementById('labor-allowance').value) || 0; // Allowance save hoga
-    const earnedSalary = parseFloat(document.getElementById('labor-calculated-salary').value) || 0;
-
-    if (!laborId || !date) {
-        alert("Employee aur Date select karna lazmi hai.");
-        return;
-    }
-
-    const existingIndex = laborAttendance.findIndex(a => a.laborId === laborId && a.date === date && !a.isAdvance);
-    
-    const record = {
-        id: existingIndex !== -1 ? laborAttendance[existingIndex].id : 'att_' + Date.now(),
-        laborId: laborId,
-        date: date,
-        status: status,
-        timeIn: timeIn,
-        timeOut: timeOut,
-        allowance: allowance, // Yahan Allowance save ho raha hai
-        earnedSalary: earnedSalary
-    };
-
-    let alertMessage = "";
-
-    if (existingIndex !== -1) {
-        laborAttendance[existingIndex] = record;
-        alertMessage = "Shaam ki attendance (Time Out / Allowance) update ho gayi hai!";
-    } else {
-        laborAttendance.push(record);
-        alertMessage = "Subah ki attendance (Time In) save ho gayi hai!";
-    }
-
-    try {
-        const userId = loggedInUser.id || loggedInUser.uid;
-        await db.collection('appData').doc(userId).collection('datasets').doc('labor_attendance').set({
-            payload: JSON.stringify(laborAttendance)
-        });
-
-        alert(alertMessage);
-        
-        document.getElementById('labor-status').value = 'Present';
-        document.getElementById('labor-time-in').value = '';
-        document.getElementById('labor-time-out').value = '';
-        document.getElementById('labor-allowance').value = '';
-        document.getElementById('labor-calculated-salary').value = '';
-        document.getElementById('labor-select').value = '';
-        
-    } catch (e) {
-        alert("Error saving record: " + e.message);
-    }
-}
-
-function generateLaborReport() {
-    const laborId = document.getElementById('report-labor-select').value;
-    const monthVal = document.getElementById('report-labor-month').value; 
-    const pdfBtn = document.getElementById('btn-labor-pdf');
-
-    if (!laborId || !monthVal) {
-        alert("Employee aur Month dono select karein!");
-        return;
-    }
-
-    const tbody = document.getElementById('labor-report-body');
-    if (!tbody) return;
-    tbody.innerHTML = '';
-    pdfBtn.style.display = 'none'; // Pehle button hide karein
-    
-    let totalPresent = 0, totalAbsent = 0, totalLeaves = 0, totalSalary = 0, totalAdvances = 0, totalAllowance = 0;
-
-    if (!laborAttendance || laborAttendance.length === 0) {
-         tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Koi attendance data majood nahi hai.</td></tr>';
-         document.getElementById('labor-report-summary').style.display = 'none';
-         return;
-    }
-
-    const filtered = laborAttendance.filter(a => a.laborId === laborId && a.date && a.date.startsWith(monthVal));
-
-    if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Is mahine ka is employee ka koi record nahi mila.</td></tr>';
-        document.getElementById('labor-report-summary').style.display = 'none';
-        return;
-    }
-
-    filtered.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(att => {
-        if (att.isAdvance) {
-            totalAdvances += (att.advanceAmount || 0);
-            tbody.innerHTML += `
-                <tr style="background: rgba(239, 68, 68, 0.08);">
-                    <td>${new Date(att.date).toLocaleDateString()}</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td style="font-weight:bold; color:var(--danger-color);">💸 Advance Taken</td>
-                    <td>-</td>
-                    <td style="font-weight:bold; color:var(--danger-color);">- ${CURRENCY_SYMBOL}${(att.advanceAmount || 0).toFixed(2)} (${att.notes || ''})</td>
-                </tr>
-            `;
-            return;
-        }
-
-        let statusText = '';
-        let statusColor = '';
-        
-        let attStatus = att.status;
-        if (!attStatus) attStatus = att.isLeave ? 'Leave' : 'Present';
-        
-        const dailyAllowance = att.allowance || 0;
-        totalAllowance += dailyAllowance;
-        totalSalary += (att.earnedSalary || 0);
-
-        if (attStatus === 'Present') {
-            statusText = '✅ Present';
-            statusColor = 'var(--success-color)';
-            totalPresent++;
-        } else if (attStatus === 'Absent') {
-            statusText = '❌ Absent';
-            statusColor = 'var(--danger-color)';
-            totalAbsent++;
-        } else {
-            statusText = '🏖️ Leave';
-            statusColor = 'var(--warning-color)';
-            totalLeaves++;
-        }
-
-        const tIn = (att.timeIn && att.timeIn !== '-') ? formatTimeFriendly(att.timeIn) : '-';
-        const tOut = (att.timeOut && att.timeOut !== '-') ? formatTimeFriendly(att.timeOut) : '-';
-
-        tbody.innerHTML += `
-            <tr>
-                <td>${new Date(att.date).toLocaleDateString()}</td>
-                <td>${tIn}</td>
-                <td>${tOut}</td>
-                <td style="font-weight:bold; color:${statusColor};">${statusText}</td>
-                <td style="color:var(--info-color);">${CURRENCY_SYMBOL}${dailyAllowance.toFixed(2)}</td>
-                <td style="font-weight:bold;">${CURRENCY_SYMBOL}${(att.earnedSalary || 0).toFixed(2)}</td>
-            </tr>
-        `;
-    });
-
-    const netSalary = totalSalary - totalAdvances;
-
-    document.getElementById('lr-present-days').textContent = totalPresent;
-    document.getElementById('lr-hours').textContent = totalAbsent; 
-    document.getElementById('lr-allowance').textContent = `${CURRENCY_SYMBOL}${totalAllowance.toFixed(2)}`;
-    
-    const pureSalary = totalSalary - totalAllowance;
-    
-    document.getElementById('lr-salary').innerHTML = `
-        Base Earned: ${CURRENCY_SYMBOL}${pureSalary.toFixed(2)}<br>
-        Allowance: <span style="color:var(--info-color); font-size: 0.95rem;">+${CURRENCY_SYMBOL}${totalAllowance.toFixed(2)}</span><br>
-        Advance: <span style="color:var(--danger-color); font-size: 0.95rem;">-${CURRENCY_SYMBOL}${totalAdvances.toFixed(2)}</span><br>
-        <span style="border-top: 1px solid var(--border-color); display:block; margin-top:5px; padding-top:5px; color:var(--success-color);">
-            Net Pay: ${CURRENCY_SYMBOL}${netSalary.toFixed(2)}
-        </span>
-    `;
-    
-    document.getElementById('labor-report-summary').style.display = 'grid';
-    pdfBtn.style.display = 'inline-block'; // Report load hone par PDF button show karein
-}
-
-// 1. INDIVIDUAL EMPLOYEE PDF GENERATOR (With Unique Code & Performance Details)
-function downloadIndividualLaborPDF() {
-    const laborId = document.getElementById('report-labor-select').value;
-    const monthVal = document.getElementById('report-labor-month').value;
-    
-    if (!laborId || !monthVal) return alert("Please select an employee and month.");
-    
-    const labor = laborList.find(l => l.id === laborId);
-    if(!labor) return;
-
-    const filtered = laborAttendance.filter(a => a.laborId === laborId && a.date && a.date.startsWith(monthVal));
-    if(filtered.length === 0) return alert("Export karne ke liye koi data nahi hai.");
-
-    let totalPresent = 0, totalAbsent = 0, totalLeaves = 0, totalSalary = 0, totalAdvances = 0, totalAllowance = 0;
-    const tableRows = [];
-
-    filtered.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(att => {
-        if (att.isAdvance) {
-            totalAdvances += (att.advanceAmount || 0);
-            tableRows.push([
-                new Date(att.date).toLocaleDateString(), '-', '-', 'Advance Taken', '-', `- ${CURRENCY_SYMBOL}${(att.advanceAmount || 0).toFixed(2)}`
-            ]);
-            return;
-        }
-
-        let attStatus = att.status || (att.isLeave ? 'Leave' : 'Present');
-        let dailyAllowance = att.allowance || 0;
-        totalAllowance += dailyAllowance;
-        totalSalary += (att.earnedSalary || 0);
-
-        if (attStatus === 'Present') totalPresent++;
-        else if (attStatus === 'Absent') totalAbsent++;
-        else totalLeaves++;
-
-        tableRows.push([
-            new Date(att.date).toLocaleDateString(),
-            (att.timeIn && att.timeIn !== '-') ? formatTimeFriendly(att.timeIn) : '-',
-            (att.timeOut && att.timeOut !== '-') ? formatTimeFriendly(att.timeOut) : '-',
-            attStatus,
-            `${CURRENCY_SYMBOL}${dailyAllowance.toFixed(2)}`,
-            `${CURRENCY_SYMBOL}${(att.earnedSalary || 0).toFixed(2)}`
-        ]);
-    });
-
-    const pureSalary = totalSalary - totalAllowance;
-    const netSalary = totalSalary - totalAdvances;
-    
-    // Unique Report Code Generator
-    const randomNums = Math.floor(10000 + Math.random() * 90000);
-    const reportCode = `REP-${labor.name.substring(0,3).toUpperCase()}-${randomNums}`;
-
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('p', 'mm', 'a4');
-    let yPos = 20;
-
-    doc.setFontSize(22); doc.setFont('helvetica', 'bold');
-    doc.text(appSettings.restaurantName || "FJM ERP", 105, yPos, { align: 'center' }); yPos += 10;
-    
-    doc.setFontSize(16);
-    doc.text("Employee Performance & Salary Report", 105, yPos, { align: 'center' }); yPos += 12;
-
-    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
-    doc.text(`Report Code: ${reportCode}`, 14, yPos);
-    doc.text(`Month: ${monthVal}`, 150, yPos); yPos += 6;
-    doc.text(`Employee Name: ${labor.name}`, 14, yPos);
-    doc.text(`Phone: ${labor.phone || 'N/A'}`, 150, yPos); yPos += 6;
-    doc.text(`Daily Wage Rate: ${CURRENCY_SYMBOL}${labor.rate.toFixed(2)} / Day`, 14, yPos);
-    doc.text(`Generated On: ${new Date().toLocaleDateString()}`, 150, yPos); yPos += 12;
-
-    // Daily Attendance Table
-    doc.autoTable({
-        startY: yPos,
-        head: [['Date', 'Time In', 'Time Out', 'Status', 'Allowance', 'Earned']],
-        body: tableRows,
-        theme: 'striped',
-        headStyles: { fillColor: [20, 184, 166], textColor: 255 },
-        styles: { fontSize: 9 }
-    });
-    yPos = doc.previousAutoTable.finalY + 12;
-
-    // Monthly Summary Section
-    doc.setFontSize(13); doc.setFont('helvetica', 'bold');
-    doc.text("Monthly Summary:", 14, yPos); yPos += 8;
-    
-    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
-    doc.text(`Total Present: ${totalPresent} days`, 14, yPos);
-    doc.text(`Total Absent: ${totalAbsent} days`, 70, yPos);
-    doc.text(`Total Leaves: ${totalLeaves} days`, 130, yPos); yPos += 8;
-
-    doc.text(`Base Salary Earned: ${CURRENCY_SYMBOL}${pureSalary.toFixed(2)}`, 14, yPos); yPos += 6;
-    doc.text(`Total Allowances: +${CURRENCY_SYMBOL}${totalAllowance.toFixed(2)}`, 14, yPos); yPos += 6;
-    doc.text(`Advances Taken: -${CURRENCY_SYMBOL}${totalAdvances.toFixed(2)}`, 14, yPos); yPos += 10;
-    
-    doc.setFontSize(14); doc.setFont('helvetica', 'bold');
-    doc.setTextColor(16, 185, 129); // Green color for final payout
-    doc.text(`NET PAYABLE SALARY: ${CURRENCY_SYMBOL}${netSalary.toFixed(2)}`, 14, yPos);
-
-    doc.save(`Performance_Report_${labor.name}_${monthVal}.pdf`);
-}
-
-// 2. ALL STAFF SUMMARY PDF GENERATOR
-function downloadAllLaborSummaryPDF() {
-    const monthVal = document.getElementById('report-labor-month').value;
-    if (!monthVal) return alert("Please select a month first to download All Staff Summary.");
-
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('p', 'mm', 'a4');
-    let yPos = 20;
-
-    doc.setFontSize(22); doc.setFont('helvetica', 'bold');
-    doc.text(appSettings.restaurantName || "FJM ERP", 105, yPos, { align: 'center' }); yPos += 10;
-    doc.setFontSize(16);
-    doc.text(`All Staff Monthly Summary (${monthVal})`, 105, yPos, { align: 'center' }); yPos += 12;
-
-    const tableRows = [];
-    let grandNet = 0;
-    let grandAdvance = 0;
-
-    laborList.forEach(labor => {
-        const atts = laborAttendance.filter(a => a.laborId === labor.id && a.date && a.date.startsWith(monthVal));
-        
-        let present = 0, absent = 0, leave = 0, salary = 0, advance = 0, allowance = 0;
-
-        atts.forEach(att => {
-            if (att.isAdvance) {
-                advance += (att.advanceAmount || 0);
-                return;
-            }
-            let st = att.status || (att.isLeave ? 'Leave' : 'Present');
-            if (st === 'Present') present++;
-            else if (st === 'Absent') absent++;
-            else leave++;
-
-            allowance += (att.allowance || 0);
-            salary += (att.earnedSalary || 0);
-        });
-
-        const net = salary - advance;
-        grandNet += net;
-        grandAdvance += advance;
-
-        // Sirf un employees ko shamil karein jinki is mahine koi activity ya advance majood hai
-        if (atts.length > 0) {
-            tableRows.push([
-                labor.name,
-                `${present} / ${absent} / ${leave}`,
-                `${CURRENCY_SYMBOL}${allowance.toFixed(2)}`,
-                `${CURRENCY_SYMBOL}${advance.toFixed(2)}`,
-                `${CURRENCY_SYMBOL}${net.toFixed(2)}`
-            ]);
-        }
-    });
-
-    if (tableRows.length === 0) {
-        return alert("Is mahine kisi employee ka koi record nahi mila.");
-    }
-
-    doc.autoTable({
-        startY: yPos,
-        head: [['Employee Name', 'P / A / L', 'Total Allowance', 'Advances', 'Net Payable']],
-        body: tableRows,
-        theme: 'grid',
-        headStyles: { fillColor: [42, 105, 185], textColor: 255 },
-        styles: { fontSize: 10 }
-    });
-    yPos = doc.previousAutoTable.finalY + 12;
-
-    doc.setFontSize(12); doc.setFont('helvetica', 'bold');
-    doc.text(`Total Advances Deducted (All Staff): ${CURRENCY_SYMBOL}${grandAdvance.toFixed(2)}`, 14, yPos); yPos += 8;
-    
-    doc.setFontSize(14);
-    doc.text(`GRAND TOTAL PAYABLE (All Staff): ${CURRENCY_SYMBOL}${grandNet.toFixed(2)}`, 14, yPos);
-
-    doc.save(`All_Staff_Summary_${monthVal}.pdf`);
-}
-
-// 1. Modal open karne ka function
-function editCustomer(id) {
-    const cust = savedCustomersList.find(c => c.id === id);
-    if (!cust) return;
-
-    // 1. Data fill karein
-    document.getElementById('modal-cust-id').value = cust.id;
-    document.getElementById('modal-cust-name').value = cust.name;
-    document.getElementById('modal-cust-phone').value = cust.phone;
-    document.getElementById('modal-cust-price').value = cust.price;
-    document.getElementById('modal-cust-item').value = 'Alo';
-
-    // 2. Worker Dropdown ko refresh karein (ZARURI STEP)
-    const workerSelect = document.getElementById('modal-cust-worker');
-    workerSelect.innerHTML = '<option value="">-- Select Worker --</option>';
-
-    // Check karein ke demandWorkers mein data hai ya nahi
-    if (typeof demandWorkers !== 'undefined' && demandWorkers.length > 0) {
-        demandWorkers.forEach(w => {
-            const opt = document.createElement('option');
-            opt.value = w.id;
-            opt.textContent = w.name;
-            
-            // Agar pehle se koi worker assigned hai to usay select karein
-            if (cust.worker && cust.worker.name === w.name) {
-                opt.selected = true;
-            }
-            workerSelect.appendChild(opt);
-        });
-    } else {
-        console.warn("Demand Workers list khali hai!");
-    }
-
-    document.getElementById('edit-customer-modal').style.display = 'flex';
-}
-
-// 2. Modal se save karne ka function
-async function saveEditedCustomerFromModal() {
-    const id = document.getElementById('modal-cust-id').value;
-    const name = document.getElementById('modal-cust-name').value.trim();
-    const phone = document.getElementById('modal-cust-phone').value.trim();
-    const price = parseFloat(document.getElementById('modal-cust-price').value) || 0;
-    const workerId = document.getElementById('modal-cust-worker').value;
-
-    // 1. Array mein Local Update (Ye foran hota hai)
-    const index = savedCustomersList.findIndex(c => c.id === id);
-    if (index !== -1) {
-        const selectedWorker = demandWorkers.find(w => w.id === workerId);
-        
-        savedCustomersList[index].name = name;
-        savedCustomersList[index].phone = phone;
-        savedCustomersList[index].price = price;
-        savedCustomersList[index].item = 'Alo';
-        savedCustomersList[index].worker = selectedWorker ? { name: selectedWorker.name, phone: selectedWorker.phone } : null;
-    }
-
-    // 2. UI ko foran refresh karein (Awaited save se pehle)
-    renderCustomerTable(); 
-
-    // 3. Database mein save karein
-    try {
-        await saveData(getUserSpecificKey('customers_list'), savedCustomersList);
-        
-        // Modal band karein
-        document.getElementById('edit-customer-modal').style.display = 'none';
-        
-        // Agar zaroorat ho to ek chota sa alert, ya phir sirf refresh
-        console.log("Data cloud par bhi save ho gaya.");
-    } catch (e) {
-        alert("Error saving to cloud: " + e.message);
-        // Agar save fail ho to wapas data revert karne ki logic yahan likh sakte hain
-    }
-}
 
 </script>
 <!-- EDIT CASH TRANSACTION MODAL -->
@@ -14982,34 +14482,8 @@ async function saveEditedCustomerFromModal() {
         </div>
     </div>
 </div>
-<!-- Edit Customer Modal -->
-<div id="edit-customer-modal" class="modal-backdrop">
-    <div class="modal-content">
-        <h3 class="panel-title">Edit Customer Details</h3>
-        <input type="hidden" id="modal-cust-id">
-        <div class="form-grid">
-            <label>Customer Name:</label>
-            <input type="text" id="modal-cust-name" class="form-control">
-            
-            <label>Phone:</label>
-            <input type="text" id="modal-cust-phone" class="form-control">
-            
-            <label>Item:</label>
-            <input type="text" id="modal-cust-item" class="form-control" value="Alo" readonly style="background: rgba(255,255,255,0.05);">
-            
-            <label>Assign Worker:</label>
-            <select id="modal-cust-worker" class="form-control">
-                <option value="">-- Select Worker --</option>
-            </select>
-            
-            <label>Price:</label>
-            <input type="number" id="modal-cust-price" class="form-control">
-        </div>
-        <div class="manage-buttons" style="margin-top: 20px;">
-            <button class="btn btn-success" onclick="saveEditedCustomerFromModal()">Save Changes</button>
-            <button class="btn btn-secondary" onclick="document.getElementById('edit-customer-modal').style.display='none'">Cancel</button>
-        </div>
-    </div>
-</div>
+
+<datalist id="customer-names-list"></datalist>
+
 </body>
 </html>
